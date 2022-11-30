@@ -28,21 +28,21 @@
 
     <ImageView
         android:id="@+id/levels_back"
-        android:layout_width="440dp"
-        android:layout_height="286dp"
-        android:visibility="invisible"
-        android:layout_marginStart="100dp"
-        android:layout_marginTop="44dp"
+        android:layout_width="485dp"
+        android:layout_height="310dp"
+        android:layout_marginStart="120dp"
+        android:layout_marginTop="48dp"
         android:src="@drawable/back"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
+        <LinearLayout
         android:id="@+id/levels"
-        android:layout_width="439dp"
-        android:layout_height="287dp"
-        android:layout_marginStart="100dp"
-        android:layout_marginTop="40dp"
+        android:layout_width="485dp"
+        android:layout_height="310dp"
+        android:layout_marginStart="120dp"
+        android:layout_marginTop="48dp"
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -51,16 +51,25 @@
             android:id="@+id/level_1"
             android:layout_marginTop="20dp"
             android:src="@drawable/black_square"
-            android:layout_marginRight="50dp"
-            android:alpha="0.0"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="72dp"
+            android:alpha="1.0"
             android:layout_width="100dp"
             android:layout_height="100dp" />
         <ImageView
             android:id="@+id/level_2"
             android:layout_marginTop="20dp"
             android:src="@drawable/black_square"
+            android:layout_marginRight="72dp"
+            android:alpha="1.0"
+            android:layout_width="100dp"
+            android:layout_height="100dp" />
+        <ImageView
+            android:id="@+id/level_3"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/black_square"
             android:layout_marginRight="50dp"
-            android:alpha="0.0"
+            android:alpha="1.0"
             android:layout_width="100dp"
             android:layout_height="100dp" />
     </LinearLayout>

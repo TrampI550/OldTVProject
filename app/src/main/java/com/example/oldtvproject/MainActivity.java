@@ -26,8 +26,9 @@ public class MainActivity extends AppCompatActivity {
     Boolean endValue;
     int gol = 10;
     int level = 0;
-    int level_Count = 1;
-    int[] static_gol;
+    double buff;
+    int level_Count;
+    int static_gol;
     String[] countries;
     Thread time_thread;
     Thread video_thread;
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     Timer timer;
     Timer timer2;
     float alpha = 0.f;
-    int[] _timers;
+    int _timer;
     TextView country;
     ImageButton agree;
     ImageView reverse;
@@ -77,11 +78,16 @@ public class MainActivity extends AppCompatActivity {
         agree = findViewById(R.id.agree);
         disagree = findViewById(R.id.disagree);
         params = new ConstraintProperties(mainxml);
+        Bundle arguments = getIntent().getExtras();
+        level = arguments.getInt("level", 0);
 
         // Video
         videoground.setVideoPath("android.resource://" + getPackageName() + "/" + R.raw.videoplayback);
 
         end_thread = new Thread(()->{
+            timer.cancel();
+            time_thread.interrupt();
+            video_thread.interrupt();
             try {
                 Thread.sleep(1500);
             } catch (InterruptedException e) {
@@ -90,13 +96,12 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, MenuActivity.class);
             intent.putExtra("endValue", endValue);
             intent.putExtra("level", level);
-            intent.putExtra("gol", static_gol[level] - gol);
+            intent.putExtra("gol", static_gol - gol);
             startActivity(intent);
-
         });
 
         time_thread = new Thread(()->{
-            memeconds = _timers[level] * 100;
+            memeconds = _timer * 100;
             final String[] time = {""};
             timer = new Timer();
             timer.schedule((TimerTask) (new TimerTask() {
@@ -113,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
                             time[0] += (millisecond < 10) ? "0" + String.valueOf(millisecond) : String.valueOf(millisecond);
                             if (timer_plus) {
                                 timer_plus = false;
-                                memeconds += 250;
+                                memeconds += (int) buff*100;
                                 timer_plus_vis = 254;
                                 timer_score.setTextColor(Color.rgb(0, timer_plus_vis, 0));
                             }
@@ -129,7 +134,6 @@ public class MainActivity extends AppCompatActivity {
                                 end_ground.setVisibility(View.VISIBLE);
                                 endValue = false;
                                 end_thread.start();
-                                timer.cancel();
                             }
                             time[0] = "";
                         }
@@ -160,13 +164,12 @@ public class MainActivity extends AppCompatActivity {
         channel.setText("CHANNEL #" + String.valueOf(level) + ":");
 
         // Забираем список станций
-        int throw_level = 0;
         country_obj = new CountriesClass();
-        _timers = country_obj.getTimes();
-        static_gol = country_obj.getSizes();
-        countries = country_obj.getCountries(throw_level);
-        level = throw_level;
-        gol = static_gol[level];
+        level_Count = country_obj.getLevel_Count();
+        buff = country_obj.getBuff(level);
+        _timer = country_obj.getTime(level);
+        static_gol = gol = country_obj.getSize(level);
+        countries = country_obj.getCountries(level);
         coefs = country_obj.getCoefs(level);
 
         Colours.put("Голубой", -16711681);
@@ -222,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
         reverse.setVisibility(View.INVISIBLE);
         params.rotationX(0);
         // Станцию отправляем
-        country.setText("#" + String.valueOf(static_gol[level] - gol) + " " + countries[static_gol[level] - gol]);
+        country.setText("#" + String.valueOf(static_gol - gol) + " " + countries[static_gol - gol]);
         // Рандомим какой цвет будет
         int index_color = ((int) (Math.random() * ColoursToTake.size())) % ColoursToTake.size();
         // Первоначальная заготовка
@@ -270,14 +273,14 @@ public class MainActivity extends AppCompatActivity {
             if (gol == 0)
                 if (level + 1 < level_Count) {
                     level++;
-                    gol = static_gol[level];
+                    buff = country_obj.getBuff(level);
+                    static_gol = gol = country_obj.getSize(level);
+                    _timer = country_obj.getTime(level);
                     // coefs
                     countries = country_obj.getCountries(level);
                     channel.setText("CHANNEL #" + String.valueOf(level) + ":");
                     CalculateAndDraw();
                 } else {
-                    time_thread.interrupt();
-                    video_thread.interrupt();
                     // game won all
                     agree.setEnabled(false);
                     disagree.setEnabled(false);
@@ -287,8 +290,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             else CalculateAndDraw();
         } else {
-            time_thread.interrupt();
-            video_thread.interrupt();
             // game over
             agree.setEnabled(false);
             disagree.setEnabled(false);
