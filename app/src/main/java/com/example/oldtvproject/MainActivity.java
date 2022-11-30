@@ -275,8 +275,9 @@ public class MainActivity extends AppCompatActivity {
                     level++;
                     buff = country_obj.getBuff(level);
                     static_gol = gol = country_obj.getSize(level);
+                    coefs = country_obj.getCoefs(level);
                     _timer = country_obj.getTime(level);
-                    // coefs
+                    memeconds = _timer*100;
                     countries = country_obj.getCountries(level);
                     channel.setText("CHANNEL #" + String.valueOf(level) + ":");
                     CalculateAndDraw();

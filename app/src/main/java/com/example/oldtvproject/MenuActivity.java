@@ -36,18 +36,16 @@ public class MenuActivity extends AppCompatActivity {
                 .getInt("level", 0);
         gol = PreferenceManager.getDefaultSharedPreferences(this)
                 .getInt("gol", 0);
-        System.out.println(level);
-        System.out.println(gol);
         endValue = PreferenceManager.getDefaultSharedPreferences(this)
                 .getBoolean("endValue", false);
         Bundle arguments = getIntent().getExtras();
+
         levels = findViewById(R.id.levels);
         levels_back = findViewById(R.id.levels_back);
         level_1 = findViewById(R.id.level_1);
         level_2 = findViewById(R.id.level_2);
         level_3 = findViewById(R.id.level_3);
 
-        System.out.println(arguments);
         if (arguments != null) {
             endValue = arguments.getBoolean("endValue");
             level = Math.max(level, arguments.getInt("level"));
@@ -60,6 +58,7 @@ public class MenuActivity extends AppCompatActivity {
         level_1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                System.out.println("WWWWWWWWWWWWWWWWWWWW");
                 Intent intent = new Intent(MenuActivity.this, MainActivity.class);
                 intent.putExtra("level", 0);
                 startActivity(intent);
@@ -94,16 +93,21 @@ public class MenuActivity extends AppCompatActivity {
                 Animation anim2 = AnimationUtils.loadAnimation(MenuActivity.this, R.anim.levels);
                 levels_back.setVisibility(View.VISIBLE);
                 levels_back.startAnimation(anim2);
+
+                level_1.setVisibility(View.VISIBLE);
+                level_2.setVisibility(View.VISIBLE);
+                if (level > 0)
+                    level_2.setClickable(true);
+                level_3.setVisibility(View.VISIBLE);
+                if (level > 1)
+                    level_3.setClickable(true);
                 registerForContextMenu(level_1);
                 Animation anim1 = AnimationUtils.loadAnimation(MenuActivity.this, R.anim.levels_alpha);
                 level_1.startAnimation(anim1);
-                level_1.setEnabled(false);
                 registerForContextMenu(level_2);
                 level_2.startAnimation(anim1);
-                level_2.setEnabled(false);
                 registerForContextMenu(level_3);
                 level_3.startAnimation(anim1);
-                level_3.setEnabled(false);
             }
         });
 
