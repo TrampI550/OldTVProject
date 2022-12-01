@@ -13,6 +13,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 public class MenuActivity extends AppCompatActivity {
 
@@ -21,10 +22,12 @@ public class MenuActivity extends AppCompatActivity {
     ImageView level_1;
     ImageView level_2;
     ImageView level_3;
+    TextView records;
     ImageView levels_back;
     ViewGroup.LayoutParams settings;
     LinearLayout levels;
     Boolean endValue;
+    CountriesClass countries_obj;
     int level;
     int gol;
     @Override
@@ -41,24 +44,32 @@ public class MenuActivity extends AppCompatActivity {
         Bundle arguments = getIntent().getExtras();
 
         levels = findViewById(R.id.levels);
+        records = findViewById(R.id.records);
         levels_back = findViewById(R.id.levels_back);
         level_1 = findViewById(R.id.level_1);
         level_2 = findViewById(R.id.level_2);
         level_3 = findViewById(R.id.level_3);
+        countries_obj = new CountriesClass();
 
         if (arguments != null) {
-            endValue = arguments.getBoolean("endValue");
-            level = Math.max(level, arguments.getInt("level"));
-            gol = Math.max(gol, arguments.getInt("gol"));
-            System.out.println(gol);
+            endValue = arguments.getBoolean("endValue", false);
+            if (level <= arguments.getInt("level", 0)) {
+                level = arguments.getInt("level", 0);
+                gol = arguments.getInt("gol");
+            } else gol = Math.max(gol, arguments.getInt("gol", 0));
             PreferenceManager.getDefaultSharedPreferences(MenuActivity.this)
                     .edit().putInt("level", level).putInt("gol", gol).putBoolean("end", endValue).apply();
         }
+        if (!endValue)
+            if (level == 0 && gol == 0)
+                records.setText("");
+            else records.setText("/" + String.valueOf(level) + "/" + "#" + String.valueOf(gol) + ": " + countries_obj.getCountries(level)[gol]);
+        else records.setText("The World is saved");
+
 
         level_1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                System.out.println("WWWWWWWWWWWWWWWWWWWW");
                 Intent intent = new Intent(MenuActivity.this, MainActivity.class);
                 intent.putExtra("level", 0);
                 startActivity(intent);

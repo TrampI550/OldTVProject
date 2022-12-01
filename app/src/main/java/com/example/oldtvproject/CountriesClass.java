@@ -13,7 +13,8 @@ public class CountriesClass {
         times = new ArrayList<Integer>();
         coefs = new ArrayList<double[]>();
         buffs = new ArrayList<double[]>();
-        countries.add(new String[]{"Сирия", "Эритрея","Куба", "Венесуэла", "Сербия", "Армения", "Таджикистан", "Киргизстан", "Индия", "Преднестровье", "Турция?", "Беларусь", "КНДР"});
+        //, "Куба", "Венесуэла", "Сербия", "Армения", "Таджикистан", "Киргизстан", "Индия", "Преднестровье", "Турция?", "Беларусь", "КНДР"
+        countries.add(new String[]{"Сирия", "Эритрея"});
         times.add(37);
         buffs.add(new double[]{2.5});
         coefs.add(new double[]{0.5, 0., 0., 0.});

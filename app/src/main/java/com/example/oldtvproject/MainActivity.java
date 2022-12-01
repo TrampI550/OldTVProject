@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     Thread time_thread;
     Thread video_thread;
     Thread end_thread;
+    Thread next_thread;
     CountriesClass country_obj;
     LinearLayout golsList;
     TextView colourOp;
@@ -88,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
             timer.cancel();
             time_thread.interrupt();
             video_thread.interrupt();
+            end_ground.setImageResource(R.drawable.black_square);
             try {
                 Thread.sleep(1500);
             } catch (InterruptedException e) {
@@ -97,6 +99,27 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("endValue", endValue);
             intent.putExtra("level", level);
             intent.putExtra("gol", static_gol - gol);
+            startActivity(intent);
+        });
+
+        next_thread = new Thread(()->{
+            timer.cancel();
+            time_thread.interrupt();
+            video_thread.interrupt();
+            int[] grounds = {R.drawable.next_back_1, R.drawable.next_back_2, R.drawable.next_back_3};
+
+            for (int j = 0; j < 2; j++)
+                for (int i = 0; i < 3; i++) {
+                    end_ground.setImageResource(grounds[i]);
+                    try {
+                        Thread.sleep(300);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            end_ground.setVisibility(View.INVISIBLE);
+            Intent intent = new Intent(MainActivity.this, MainActivity.class);
+            intent.putExtra("level", level);
             startActivity(intent);
         });
 
@@ -125,8 +148,6 @@ public class MainActivity extends AppCompatActivity {
                             timer_score.setTextColor(Color.rgb(0, timer_plus_vis, 0));
                             videoalp.setAlpha(1 - alpha);
                             System.out.println(time[0]);
-                            System.out.println("-----");
-                            System.out.println(memeconds);
                             timer_score.setText(time[0]);
                             if (memeconds == 0) {
                                 agree.setEnabled(false);
@@ -172,6 +193,9 @@ public class MainActivity extends AppCompatActivity {
         countries = country_obj.getCountries(level);
         coefs = country_obj.getCoefs(level);
 
+        if (gol < 10)
+            drawSquares();
+
         Colours.put("Голубой", -16711681);
         Colours.put("Синий", -16776961);
         Colours.put("Желтый", -256);
@@ -209,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void drawSquares() {
-        golOut.setText(String.valueOf(10));
+        golOut.setText(String.valueOf(gol));
         ViewGroup.LayoutParams settings = new ViewGroup.LayoutParams(50, 50);
         for(int i = 0; i < gol; i++) {
             ImageView square = new ImageView(this);
@@ -225,6 +249,9 @@ public class MainActivity extends AppCompatActivity {
         reverse.setVisibility(View.INVISIBLE);
         params.rotationX(0);
         // Станцию отправляем
+        System.out.println(countries[0]);
+        System.out.println(static_gol);
+        System.out.println(gol);
         country.setText("#" + String.valueOf(static_gol - gol) + " " + countries[static_gol - gol]);
         // Рандомим какой цвет будет
         int index_color = ((int) (Math.random() * ColoursToTake.size())) % ColoursToTake.size();
@@ -272,20 +299,19 @@ public class MainActivity extends AppCompatActivity {
                 drawSquares();
             if (gol == 0)
                 if (level + 1 < level_Count) {
+                    // go next level
                     level++;
-                    buff = country_obj.getBuff(level);
-                    static_gol = gol = country_obj.getSize(level);
-                    coefs = country_obj.getCoefs(level);
-                    _timer = country_obj.getTime(level);
-                    memeconds = _timer*100;
-                    countries = country_obj.getCountries(level);
-                    channel.setText("CHANNEL #" + String.valueOf(level) + ":");
-                    CalculateAndDraw();
+                    agree.setEnabled(false);
+                    disagree.setEnabled(false);
+                    end_ground.setVisibility(View.VISIBLE);
+                    end_ground.setImageResource(R.drawable.next_back_1);
+                    next_thread.start();
                 } else {
                     // game won all
                     agree.setEnabled(false);
                     disagree.setEnabled(false);
                     end_ground.setVisibility(View.VISIBLE);
+                    end_ground.setImageResource(R.drawable.black_square);
                     endValue = true;
                     end_thread.start();
                 }
@@ -295,7 +321,7 @@ public class MainActivity extends AppCompatActivity {
             agree.setEnabled(false);
             disagree.setEnabled(false);
             end_ground.setVisibility(View.VISIBLE);
-            endValue = false;
+            end_ground.setImageResource(R.drawable.black_square);
             end_thread.start();
         }
     }
