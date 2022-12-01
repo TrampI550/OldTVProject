@@ -53,7 +53,7 @@ public class MenuActivity extends AppCompatActivity {
 
         if (arguments != null) {
             endValue = arguments.getBoolean("endValue", false);
-            if (level <= arguments.getInt("level", 0)) {
+            if (level < arguments.getInt("level", 0)) {
                 level = arguments.getInt("level", 0);
                 gol = arguments.getInt("gol");
             } else gol = Math.max(gol, arguments.getInt("gol", 0));
@@ -63,7 +63,8 @@ public class MenuActivity extends AppCompatActivity {
         if (!endValue)
             if (level == 0 && gol == 0)
                 records.setText("");
-            else records.setText("/" + String.valueOf(level) + "/" + "#" + String.valueOf(gol) + ": " + countries_obj.getCountries(level)[gol]);
+            else records.setText("/" + String.valueOf(level) + "/" + "#" + String.valueOf(gol) +
+                    ": " + countries_obj.getCountries(level)[gol]);
         else records.setText("The World is saved");
 
 
