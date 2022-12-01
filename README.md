@@ -1,3 +1,3 @@
 # OldTVProject
 Mobile adaptation of little known PC game "OldTV"
-To get apk go to 
+To get apk telegram me by @AlexSabl
